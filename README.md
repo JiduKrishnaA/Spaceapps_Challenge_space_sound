@@ -16,7 +16,7 @@ An image is analysed by converting it to greyscale and taking brightness values 
 
 1. Clone this repo to the machine.
 
-2. import all required python libraries from requirements.txt.
+2. Import all required python libraries from requirements.txt.
 
 3. Run the 'spaceapps_challenge_with_gui.py' file for GUI interface.
 
