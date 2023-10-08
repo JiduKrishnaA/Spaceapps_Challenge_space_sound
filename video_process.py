@@ -1,8 +1,9 @@
 from moviepy.editor import VideoFileClip, clips_array
 import os
+from space_audio_without_gui import process_img
 
 # Video file input path
-video_path = 'input_video.mp4'  # Replace with your video file path
+video_path = 'FlighttoAGCarinae.mp4'  # Replace with your video file path
 
 # Create a directory to store processed frames
 output_dir = 'processed_frames'
@@ -12,8 +13,9 @@ os.makedirs(output_dir, exist_ok=True)
 def process_frame(frame):
     # Replace this with your image processing code
     # In this example, we'll just convert the frame to grayscale
-    processed_frame = frame.to_grayscale()
-    return processed_frame
+    process_img(frame)
+    #processed_frame = frame.to_grayscale()
+    #return processed_frame
 
 # Load the video clip
 video_clip = VideoFileClip(video_path)
