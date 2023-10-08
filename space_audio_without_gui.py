@@ -50,6 +50,18 @@ current_phase = 0.0
 # Get the center coordinates of the image
 center_x, center_y = pixel_data.shape[1] // 2, pixel_data.shape[0] // 2
 
+###
+#addition: find brightest point on image as center
+image_array = np.array(space_image)
+
+# Find the brightest pixel
+max_pixel_location = np.unravel_index(np.argmax(image_array), image_array.shape)
+
+# Access coordinates
+brightest_row, brightest_col = max_pixel_location
+print(f'Brightest spot coordinates: Row={brightest_row}, Column={brightest_col}')
+###
+'''
 # Define the group size for accumulating brightness values
 group_size = 5  # Adjust the group size as needed
 
@@ -130,3 +142,5 @@ with sf.SoundFile('space_audio_grouped.wav', 'w', sample_rate, 1) as file:
             audio_data = np.zeros(chunk_size)
 
 print("Grouped rotating line audio file 'space_audio_grouped.wav' has been generated.")
+
+'''
