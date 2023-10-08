@@ -39,6 +39,11 @@ for i, frame in enumerate(video_clip.iter_frames(fps=video_clip.fps)):
         # Increment the frame counter to the next second
         frame_counter += video_clip.fps
 
+
+with sf.SoundFile('space_audio_grouped5.wav', 'w', sample_rate, 1) as file:
+    for audio_data in audio_segments:
+        file.write(audio_data)
+'''
 # Convert the concatenated audio segments to a NumPy array
 audio_data = np.concatenate(audio_segments)
 
@@ -48,4 +53,4 @@ sf.write(output_audio_path_wav, audio_data, sample_rate)
 
 print(f"Audio saved as '{output_audio_path_wav}'")
 
-# Now, you have a single audio file for the entire video.
+# Now, you have a single audio file for the entire video.'''

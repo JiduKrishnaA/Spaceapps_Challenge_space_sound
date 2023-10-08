@@ -139,5 +139,5 @@ def process_img(image_path):
                 audio_data = np.zeros(chunk_size)
 
     print("Grouped rotating line audio file 'space_audio_grouped.wav' has been generated.")
-    return 
 
+process_img('heic0506a.jpg')

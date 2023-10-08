@@ -21,8 +21,8 @@ def process_img(image_path):
     bell_sound = bell_sound.set_channels(1)
 
     # Define parameters for audio generation
-    sample_rate = 44100  # Sample rate in Hz
-    duration = 0.48  # Duration of each audio segment in seconds (adjust as needed)
+    sample_rate = 22050  # Reduced sample rate
+    duration = 1  # Duration of each audio segment in seconds (adjust as needed)
 
     # Map pixel brightness to audio frequencies
     def brightness_to_frequency(brightness):
@@ -36,9 +36,7 @@ def process_img(image_path):
         return min_frequency + (max_frequency - min_frequency) * (brightness - min_brightness) / (max_brightness - min_brightness)
 
     # Initialize an empty audio array
-    total_duration = 360  # Total duration in degrees (0 to 360)
-    total_samples = int(sample_rate * total_duration)
-
+        
     # Define the chunk size for incremental audio generation
     chunk_size = int(sample_rate * duration)
 
@@ -53,6 +51,9 @@ def process_img(image_path):
 
     # Generate audio incrementally while rotating the line
     audio_list = []  # Store audio segments in a list
+    
+    # Initialize the initial phase of the waveform
+    current_phase = 0.0
 
     for angle_deg in range(0, 360):
         angle_rad = np.radians(angle_deg)
@@ -106,7 +107,7 @@ def process_img(image_path):
 
         if frequencies:
             # Calculate the current phase only if frequencies are available
-            current_phase = 0.0
+            
             for frequency in frequencies:
                 t = np.linspace(0, duration, chunk_size, endpoint=False)
                 waveform = np.sin(2 * np.pi * frequency * t + current_phase)
@@ -121,18 +122,26 @@ def process_img(image_path):
                 if average_brightness > 150:  # Adjust the threshold as needed
                     special_tune = np.array(bell_sound.get_array_of_samples())
                     waveform += special_tune[:chunk_size]
-        
-                audio_list.append(waveform)
+
+                if angle_deg % 10 == 0:
+                    audio_list.append(waveform)
         
             # Update the current phase for the next iteration
             current_phase += 2 * np.pi * frequencies[0] * duration
 
     # Combine the audio segments into a single audio array
-    audio_data = np.array(audio_list).sum(axis=0)
+    audio_list1=[]
+    with sf.SoundFile('space_audio_grouped3.wav', 'w', sample_rate, 1) as file:
+        for audio_data in audio_list:
+            audio_data /= np.max(np.abs(audio_data))
+            audio_list1.append(audio_data)
+            file.write(audio_data)  # Normalize audio data
 
     # Normalize the audio data
-    audio_data /= np.max(np.abs(audio_data))
-
+    #audio_data /= np.max(np.abs(audio_data))
+    
+    return audio_list1
+x=process_img('heic0506a.jpg')
     # Convert the NumPy audio data to bytes and return a single audio segment
-    audio_bytes = audio_data.astype(np.int16).tobytes()
-    return AudioSegment(data=audio_bytes, sample_width=2, frame_rate=sample_rate, channels=1)
+    #audio_bytes = audio_data.astype(np.int16).tobytes()
+    #return AudioSegment(data=audio_bytes, sample_width=2, frame_rate=sample_rate, channels=1)

@@ -45,8 +45,8 @@ def find_brightest(image_path):
 
     ###
 
-image_path = 'heic0506a.jpg'  # Replace with your galaxy image file path
-brightest_x, brightest_y=find_brightest(image_path)
+#image_path = 'heic0506a.jpg'  # Replace with your galaxy image file path
+#brightest_x, brightest_y=find_brightest(image_path)
 '''
 # Draw a marker (a red circle, for example) at the brightest hotspot
 from PIL import ImageDraw, Image
