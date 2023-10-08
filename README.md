@@ -14,12 +14,20 @@ An image is analysed by converting it to greyscale and taking brightness values 
 
 **HOW TO USE:**
 
-Run the 'spaceapps_challenge_with_gui.py' file.
+1. Clone this repo to the machine.
 
-A GUI window will open.
+2. import all required python libraries from requirements.txt.
 
-Here choose an image and an audio file.
+3. Run the 'spaceapps_challenge_with_gui.py' file for GUI interface.
 
-Press the 'Convert' and then press the 'Play Audio' button.
+4. If you want to run without GUI interface. Run 'spaceapps_challenge_without_gui.py'
 
-Wait for some time and the audio will play automatically after being generated.
+5. A GUI window will open.
+
+6. Here, choose an image you want to convert to audio.
+   
+7. Then select an audio file to enhance the audio pitch for the bright stars.
+
+8. Press the 'Convert' and then press the 'Play Audio' button.
+
+9. Wait for some time and the audio will play automatically after being generated.
