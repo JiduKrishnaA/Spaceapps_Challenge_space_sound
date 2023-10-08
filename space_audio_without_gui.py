@@ -5,7 +5,7 @@ import soundfile as sf
 import scipy.signal as signal
 
 # Load the space image
-image_path = 'black.jpeg'
+image_path = 'M31_HubbleSpitzerGendler_2000.jpg'
 space_image = Image.open(image_path)
 
 # Convert the image to grayscale
