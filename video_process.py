@@ -1,6 +1,6 @@
 from moviepy.editor import VideoFileClip, clips_array
 import os
-from space_audio_without_gui import process_img
+from space_audio_without_gui_copy import process_img
 
 # Video file input path
 video_path = 'FlighttoAGCarinae.mp4'  # Replace with your video file path
