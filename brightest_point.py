@@ -3,46 +3,51 @@ import numpy as np
 from skimage import io, filters, morphology
 from scipy.ndimage import label
 
-# Load the galaxy image
+def find_brightest(image_path):
+    # Load the galaxy image
+    #image_path = 'heic0506a.jpg'  # Replace with your galaxy image file path
+    image = io.imread(image_path)
+
+    # Convert the image to grayscale
+    gray_image = np.mean(image, axis=2)
+
+    # Apply a threshold to segment the brightest regions
+    threshold = filters.threshold_otsu(gray_image)
+    binary_image = gray_image > threshold
+
+    # Clean up the binary image (optional)
+    binary_image = morphology.remove_small_objects(binary_image, min_size=100)
+
+    # Label connected components in the binary image
+    labeled_image, num_features = label(binary_image)
+
+    # Find the region with the largest area (brightest part of the galaxy)
+    largest_region = None
+    largest_area = 0
+
+    for region_label in range(1, num_features + 1):
+        region_mask = labeled_image == region_label
+        region_area = np.sum(region_mask)
+        
+        if region_area > largest_area:
+            largest_area = region_area
+            largest_region = region_mask
+
+    # Find the centroid of the largest region
+    centroid = np.argwhere(largest_region).mean(axis=0)
+
+    # Access coordinates of the brightest part of the galaxy
+    brightest_x, brightest_y = centroid
+
+    print(f'Brightest part of the galaxy: X={brightest_x}, Y={brightest_y}')
+    return (brightest_x,brightest_y)
+
+
+    ###
+
 image_path = 'heic0506a.jpg'  # Replace with your galaxy image file path
-image = io.imread(image_path)
-
-# Convert the image to grayscale
-gray_image = np.mean(image, axis=2)
-
-# Apply a threshold to segment the brightest regions
-threshold = filters.threshold_otsu(gray_image)
-binary_image = gray_image > threshold
-
-# Clean up the binary image (optional)
-binary_image = morphology.remove_small_objects(binary_image, min_size=100)
-
-# Label connected components in the binary image
-labeled_image, num_features = label(binary_image)
-
-# Find the region with the largest area (brightest part of the galaxy)
-largest_region = None
-largest_area = 0
-
-for region_label in range(1, num_features + 1):
-    region_mask = labeled_image == region_label
-    region_area = np.sum(region_mask)
-    
-    if region_area > largest_area:
-        largest_area = region_area
-        largest_region = region_mask
-
-# Find the centroid of the largest region
-centroid = np.argwhere(largest_region).mean(axis=0)
-
-# Access coordinates of the brightest part of the galaxy
-brightest_x, brightest_y = centroid
-
-print(f'Brightest part of the galaxy: X={brightest_x}, Y={brightest_y}')
-
-
-
-###
+brightest_x, brightest_y=find_brightest(image_path)
+'''
 # Draw a marker (a red circle, for example) at the brightest hotspot
 from PIL import ImageDraw, Image
 image1 = Image.open(image_path)
@@ -67,3 +72,5 @@ image_with_marker.show()  # Display the image
 # Display or save the marked image (optional)
 #io.imshow(image)
 #io.show()
+
+'''
