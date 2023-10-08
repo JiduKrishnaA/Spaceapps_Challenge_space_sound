@@ -45,9 +45,6 @@ def process_img(image_path):
     # Initialize an empty audio array
     audio_data = np.zeros(chunk_size)
 
-    # Initialize the initial phase of the waveform
-    current_phase = 0.0
-
     # Get the center coordinates of the image
     center_x, center_y = find_brightest(image_path)
 
@@ -106,27 +103,29 @@ def process_img(image_path):
 
         # Map average brightness to frequency
         frequencies = [brightness_to_frequency(brightness) for brightness in grouped_brightness]
+
+        if frequencies:
+            # Calculate the current phase only if frequencies are available
+            current_phase = 0.0
+            for frequency in frequencies:
+                t = np.linspace(0, duration, chunk_size, endpoint=False)
+                waveform = np.sin(2 * np.pi * frequency * t + current_phase)
         
-        # Generate audio for each group
-        for frequency in frequencies:
-            t = np.linspace(0, duration, chunk_size, endpoint=False)
-            waveform = np.sin(2 * np.pi * frequency * t + current_phase)
-    
-            fade_duration = 0.001  # Adjust the fade duration as needed
-            fade_samples = int(fade_duration * sample_rate)
-            envelope = np.ones(chunk_size)
-            envelope[:fade_samples] = np.linspace(0, 1, fade_samples)
-            envelope[-fade_samples:] = np.linspace(1, 0, fade_samples)
-            waveform *= envelope
-    
-            if average_brightness > 150:  # Adjust the threshold as needed
-                special_tune = np.array(bell_sound.get_array_of_samples())
-                waveform += special_tune[:chunk_size]
-
-            audio_list.append(waveform)
-
-        # Update the current phase for the next iteration
-        current_phase += 2 * np.pi * frequency * duration
+                fade_duration = 0.001  # Adjust the fade duration as needed
+                fade_samples = int(fade_duration * sample_rate)
+                envelope = np.ones(chunk_size)
+                envelope[:fade_samples] = np.linspace(0, 1, fade_samples)
+                envelope[-fade_samples:] = np.linspace(1, 0, fade_samples)
+                waveform *= envelope
+        
+                if average_brightness > 150:  # Adjust the threshold as needed
+                    special_tune = np.array(bell_sound.get_array_of_samples())
+                    waveform += special_tune[:chunk_size]
+        
+                audio_list.append(waveform)
+        
+            # Update the current phase for the next iteration
+            current_phase += 2 * np.pi * frequencies[0] * duration
 
     # Combine the audio segments into a single audio array
     audio_data = np.array(audio_list).sum(axis=0)
