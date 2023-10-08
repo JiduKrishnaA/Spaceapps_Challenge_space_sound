@@ -3,6 +3,7 @@ import numpy as np
 from PIL import Image
 import soundfile as sf
 import scipy.signal as signal
+from brightest_point import find_brightest
 
 # Load the space image
 image_path = 'M31_HubbleSpitzerGendler_2000.jpg'
@@ -48,20 +49,13 @@ audio_data = np.zeros(chunk_size)
 current_phase = 0.0
 
 # Get the center coordinates of the image
-center_x, center_y = pixel_data.shape[1] // 2, pixel_data.shape[0] // 2
+#center_x, center_y = pixel_data.shape[1] // 2, pixel_data.shape[0] // 2
 
 ###
 #addition: find brightest point on image as center
-image_array = np.array(space_image)
-
-# Find the brightest pixel
-max_pixel_location = np.unravel_index(np.argmax(image_array), image_array.shape)
-
-# Access coordinates
-brightest_row, brightest_col = max_pixel_location
-print(f'Brightest spot coordinates: Row={brightest_row}, Column={brightest_col}')
+center_x,center_y=find_brightest(image_path)
 ###
-'''
+
 # Define the group size for accumulating brightness values
 group_size = 5  # Adjust the group size as needed
 
@@ -108,10 +102,12 @@ with sf.SoundFile('space_audio_grouped.wav', 'w', sample_rate, 1) as file:
         for i in range(0, len(line_pixels_x), group_size):
             group_x = line_pixels_x[i:i+group_size]
             group_y = line_pixels_y[i:i+group_size]
-            group_brightness = [pixel_data[y, x] for x, y in zip(group_x, group_y)]
+            
+            # Convert x and y coordinates to integers before accessing pixel values
+            group_brightness = [pixel_data[int(y), int(x)] for x, y in zip(group_x, group_y)]
             average_brightness = np.mean(group_brightness)
             grouped_brightness.append(average_brightness)
-        
+
         # Map average brightness to frequency
         frequencies = [brightness_to_frequency(brightness) for brightness in grouped_brightness]
         
@@ -143,4 +139,3 @@ with sf.SoundFile('space_audio_grouped.wav', 'w', sample_rate, 1) as file:
 
 print("Grouped rotating line audio file 'space_audio_grouped.wav' has been generated.")
 
-'''
